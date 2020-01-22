@@ -862,7 +862,10 @@ class Engine:
 
         # if input data is torch dataloader we replace batch sampler by a batch sampler
         # such that its random sampling indices are reproducible by prefetching them before data iteration
-        if isinstance(self.state.dataloader, torch.utils.data.DataLoader):
+        if (
+            isinstance(self.state.dataloader, torch.utils.data.DataLoader) and
+            not isinstance(self.state.dataloader.dataset, torch.utils.data.IterableDataset)
+        ):
 
             if (self._dataloader_len is not None) and hasattr(self.state.dataloader.sampler, "epoch"):
                 if self._dataloader_len != self.state.epoch_length:
